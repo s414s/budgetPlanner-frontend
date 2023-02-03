@@ -1,0 +1,25 @@
+/* Top Menu */
+
+@media (max-width: 767.98px) {
+    .topmenu {
+        top: 5rem;
+    }
+}
+
+.compTopMenu .topmenu .nav-link {
+    font-weight: 500;
+    color: #333;
+}
+
+.compTopMenu .topmenu .nav-link.active {
+    color: #2470dc;
+}
+
+.compTopMenu .topmenu .nav-link:hover .feather,
+.compTopMenu .topmenu .nav-link.active .feather {
+    color: inherit;
+}
+
+.compTopMenu .topmenu-heading {
+    font-size: .75rem;
+}
