@@ -16,16 +16,16 @@ const api = {
 
     get: async function(uri, obj = {}){
 
-        // Pasamos a query : String
+        // Creates query : String
             const query = 
                 Object.keys(obj)
                 .map(k => encodeURIComponent(k) + "=" + encodeURIComponent(obj[k]) )
                 .join('&');
         
-        // Preparamos el endpoint
+        // Creates endpoint
             const url = this.endpoint+uri+"?"+query;
 
-        // Hacemos la petición
+        // Request
             const response = await fetch(url, {
                 method: 'GET',
                 headers : {
@@ -41,10 +41,10 @@ const api = {
 
     post: async function(uri, obj = {}, method="POST"){
 
-        // Preparamos el endpoint
+        // Creates endpoint
             const url = this.endpoint + uri;
 
-        // Hacemos la petición
+        // Request
             const response = await fetch(url, {
                 method: method,
                 headers : {
@@ -72,7 +72,6 @@ const api = {
         return this.post(uri, obj, "DELETE");
 
     },
-
 };
 
 export default api;
