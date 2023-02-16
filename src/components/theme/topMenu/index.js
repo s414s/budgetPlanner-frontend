@@ -19,7 +19,7 @@ const TopMenu = () => {
                 </li>
                 <li className="nav-item">
                     <a className="nav-link dropdown-toggle" href="#" role="button" id="dropdownMenuLink1" data-bs-toggle="dropdown" aria-expanded="false">
-                        Archivo
+                        File
                     </a>
                     <ul className="dropdown-menu" aria-labelledby="dropdownMenuLink1">
                         <li><a className="dropdown-item" href="#">Accion 1</a></li>
@@ -29,7 +29,7 @@ const TopMenu = () => {
                 </li>
                     <li className="nav-item">
                     <a className="nav-link dropdown-toggle" href="#" role="button" id="dropdownMenuLink2" data-bs-toggle="dropdown" aria-expanded="false">
-                        Conceptos
+                        Concepts
                     </a>
                     <ul className="dropdown-menu" aria-labelledby="dropdownMenuLink2">
                         <li><a className="dropdown-item" href="#">Accion 1</a></li>
@@ -39,7 +39,7 @@ const TopMenu = () => {
                 </li>
                 <li className="nav-item">
                     <a className="nav-link dropdown-toggle" href="#" role="button" id="dropdownMenuLink3" data-bs-toggle="dropdown" aria-expanded="false">
-                        Herramientas
+                        Tools
                     </a>
                     <ul className="dropdown-menu" aria-labelledby="dropdownMenuLink3">
                         <li><a className="dropdown-item" href="#">Accion 1</a></li>
@@ -49,7 +49,7 @@ const TopMenu = () => {
                 </li>
                 <li className="nav-item">
                     <a className="nav-link dropdown-toggle" href="#" role="button" id="dropdownMenuLink4" data-bs-toggle="dropdown" aria-expanded="false">
-                        Informes
+                        Reports
                     </a>
                     <ul className="dropdown-menu" aria-labelledby="dropdownMenuLink4">
                         <li><a className="dropdown-item" href="#">Accion 1</a></li>
@@ -59,7 +59,7 @@ const TopMenu = () => {
                 </li>
                 <li className="nav-item">
                     <a className="nav-link dropdown-toggle" href="#" role="button" id="dropdownMenuLink5" data-bs-toggle="dropdown" aria-expanded="false">
-                        Vistas
+                        Views
                     </a>
                     <ul className="dropdown-menu" aria-labelledby="dropdownMenuLink5">
                         <li><a className="dropdown-item" href="#">Accion 1</a></li>
@@ -69,13 +69,12 @@ const TopMenu = () => {
                 </li>
                 <li className="nav-item">
                     <a className="nav-link" href="#">
-                        Configuración
+                        Settings
                     </a>
                 </li>
             </ul>
         </div>
     </nav>
-
     )
 }
 
