@@ -53,7 +53,7 @@ const PopUpEditConcept = ( props ) => {
                                         name: props.elementFocus.name
                                     }, state)) } }
 
-                        disabled={ ( state.code.length > 0? 
+                        disabled={ ( state.code.length >= 0? 
                             !validateCodeUnique(state.code, props.elements)
                             : true)
                         }>

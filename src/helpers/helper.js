@@ -39,7 +39,7 @@ const compareObj = (originalObj, newObj) => {
     let output = {};
 
     keys.forEach( e=> {
-        if (originalObj[e] !== newObj[e]) {
+        if (originalObj[e] !== newObj[e] && newObj[e]) {
             output[e] = newObj[e]
         }
     })

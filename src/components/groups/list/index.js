@@ -8,8 +8,8 @@ import Loading from "../../theme/loading";
 import Breadcrumb from "../../theme/breadcrumb";
 import ConceptInfo from "../../concepts/information";
 import ToolBar from "../../theme/toolBar";
-import PopUpCreateConcept from "../../concepts/popUpCreateConcept";
-import PopUpEditConcept from "../../concepts/popUpEditConcept";
+import PopUpCreateGroup from "../popUpCreateGroup";
+import PopUpEditGroup from "../popUpEditGroup";
 
 const GroupsList = () => {
   const { idFolder } = useParams();
@@ -52,7 +52,6 @@ const GroupsList = () => {
     try {
       const res = await API.del('groups/del/' + idGroup);
       if (res.status) {
-        console.log('Group erased correctly');
         setState({ ...state, lastModified: (+new Date()) })
       } else {
         alert('Group NOT eliminated')
@@ -60,14 +59,15 @@ const GroupsList = () => {
     } catch (error) { alert(error) }
   };
 
-  const createNewGroup = async (code, id_typeunit, name) => {
+  const createNewGroup = async (code, id_typeunit, name, amount) => {
 
     try {
       const res = await API.post('groups/add', {
-        id_budget: state.pathInfo.idBudget,
+        id_folder: state.pathInfo.idFolder,
         code,
         id_typeunit,
-        name
+        name,
+        amount
       });
 
       if (res.status) {
@@ -88,7 +88,6 @@ const GroupsList = () => {
       } else {
         alert("group was not modified");
       }
-
     } catch (error) { alert(error); }
   };
 
@@ -199,7 +198,7 @@ const GroupsList = () => {
                 <i onClick={() => {
                   setState({
                     ...state,
-                    dataForm: { id: row.id, code: row.code, summary: row.name },
+                    dataForm: { id: row.id, code: row.code, summary: row.name, amount :row.amount },
                     popup: { ...state.popup, modify: true }
                   })
                 }} className="bi bi-pencil-square"></i>
@@ -217,7 +216,7 @@ const GroupsList = () => {
 
       {
         state.popup.modify &&
-        <PopUpEditConcept
+        <PopUpEditGroup
           closePopup={() => { setState({ ...state, popup: { ...state.popup, modify: false } }) }}
           trigger={updateGroup}
           elements={state.elements}
@@ -227,7 +226,7 @@ const GroupsList = () => {
 
       {
         state.popup.create &&
-        <PopUpCreateConcept
+        <PopUpCreateGroup
           closePopup={() => { setState({ ...state, popup: { ...state.popup, create: false } }) }}
           trigger={createNewGroup}
           elements={state.elements}
