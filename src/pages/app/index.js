@@ -8,7 +8,7 @@ const App = (props) => {
             <div className='compTopBar'>
                 <TopBar />
             </div>
-            <div className="compApp container-fluid">
+            <div className="compApp container">
                 <TopMenu />
                 <div className='mt-2 ms-sm-auto px-md-4'>
                     {props.container}

@@ -2,7 +2,6 @@ const validateEmail = mail => (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.t
 
 const capitalizeFirstLetter = string => (string.charAt(0).toUpperCase() + string.slice(1));
 
-// https://medium.com/swlh/how-to-round-to-a-certain-number-of-decimal-places-in-javascript-ed74c471c1b8
 const roundAccurately = (number, decimalPlaces) => {
     if (number < 0) {
         number *= -1;
