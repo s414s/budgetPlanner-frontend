@@ -1,12 +1,11 @@
 import "./style.css";
 import { useEffect, useState } from "react";
-import { useLocation, useParams, Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import DataTable from "react-data-table-component";
 import { customStyles } from "./configTable";
 import API from "../../../config/API";
 import Loading from "../../theme/loading";
-import Breadcrumb from "../../theme/breadcrumb/breadcrumb";
+import Breadcrumb from "../../theme/breadcrumb";
 import ConceptInfo from "../../concepts/information";
 import ToolBar from "../../theme/toolBar";
 import PopUpCreateConcept from "../../concepts/popUpCreateConcept";
@@ -14,10 +13,6 @@ import PopUpEditConcept from "../../concepts/popUpEditConcept";
 
 const GroupsList = () => {
   const { idFolder } = useParams();
-  const idBudget = 1;
-
-  const location = useLocation()
-  const navigate = useNavigate();
 
   const [state, setState] = useState({
     status: "loading",
@@ -32,23 +27,24 @@ const GroupsList = () => {
 
   const awaitResponses = async () => {
     const promiseGroupsList = API.get('groups/list/' + idFolder);
-    const promiseBudgetInfo = API.get('budgets/get/' + idBudget);
+    const promiseFolderPath = API.get('folders/path/' + idFolder);
 
-    const [listElements, budgetInfo] = await Promise.all([promiseGroupsList, promiseBudgetInfo])
+    const [listElements, pathInfo] = await Promise.all([promiseGroupsList, promiseFolderPath])
+
     setState({
       ...state,
       status: "loaded",
       elements: listElements.data,
-      targetIdShowInfo: listElements.data[0].id,
-      budgetName: budgetInfo.data.title,
-      userRole: budgetInfo.data.role,
+      targetIdShowInfo: listElements.data[0]?.id,
+      pathInfo: pathInfo.data,
+      userRole: pathInfo.data.role,
       dataForm: {},
-      targetElementId: listElements.data[0].id
+      targetElementId: listElements.data[0]?.id
     });
   };
 
   useEffect(() => {
-    awaitResponses()
+    awaitResponses();
   }, [state.lastModified]);
 
   const deleteGroup = async (idGroup) => {
@@ -61,16 +57,14 @@ const GroupsList = () => {
       } else {
         alert('Group NOT eliminated')
       }
-    } catch (error) {
-      alert(error)
-    }
+    } catch (error) { alert(error) }
   };
 
   const createNewGroup = async (code, id_typeunit, name) => {
 
     try {
       const res = await API.post('groups/add', {
-        id_budget: idBudget,
+        id_budget: state.pathInfo.idBudget,
         code,
         id_typeunit,
         name
@@ -81,10 +75,7 @@ const GroupsList = () => {
       } else {
         alert("new group was not created")
       }
-
-    } catch (error) {
-      alert(error);
-    }
+    } catch (error) { alert(error); }
   };
 
   const updateGroup = async (idGroup, objInfoToUpdate) => {
@@ -98,9 +89,7 @@ const GroupsList = () => {
         alert("group was not modified");
       }
 
-    } catch (error) {
-      alert(error);
-    }
+    } catch (error) { alert(error); }
   };
 
   const increaseOrder = async (groupId) => {
@@ -112,15 +101,18 @@ const GroupsList = () => {
   };
 
   if (state.status === "loading") {
-    return <Loading text={'cargando...'} />
+    return <Loading text={'loading...'} />
   } else { console.log(state.elements) };
 
   return (
-    <div className="compFoldersList vh-100">
+    <div className="compGroupsList vh-100">
 
-      <h5>{state.budgetName}</h5>
+      <h5>{state.pathInfo.budgetTitle}</h5>
 
-      <Breadcrumb path={['Root', 'Structures', 'Reinforced Concrete', 'Concrete Beam']} />
+      <Breadcrumb path={[
+        [state.pathInfo.budgetId, state.pathInfo.budgetTitle],
+        [state.pathInfo.folderId, state.pathInfo.folderName]
+      ]} />
 
       <ToolBar
         style={{ visibility: (state.userRole === "viewer") ? 'hidden' : 'visible' }}
@@ -140,87 +132,85 @@ const GroupsList = () => {
           customStyles={customStyles}
           onRowClicked={row => { setState({ ...state, targetIdShowInfo: row.id }) }}
           columns={
-            [
-              {
-                id: 'code',
-                name: 'Code',
-                selector: row => row["code"],
-                compact: true,
-                sortable: true
-              },
-              {
-                id: 'type',
-                name: 'Type',
-                selector: row => <i className="bi bi-share"></i>,
-                compact: true,
-                sortable: true
-              },
-              {
-                id: 'unit',
-                name: 'Unit',
-                selector: row => row["unit"],
-                compact: true,
-                sortable: false
-              },
-              {
-                id: 'name',
-                name: 'Name',
-                selector: row => <Link to={'/app/decomp/items/' + row.id}>{row["name"]}</Link>,
-                sortable: true,
-                grow: 4,
-                reorder: true,
-              },
-              {
-                id: 'amount',
-                name: 'Quantity',
-                selector: row => row["amount"],
-                right: true,
-                reorder: true,
-              },
-              {
-                id: 'price',
-                name: 'Price',
-                selector: row => new Intl.NumberFormat('de-DE', {
-                  style: 'currency',
-                  currency: 'EUR',
-                  maximumFractionDigits: 2
-                }).format(row['totalPrice']),
-                right: true,
-                reorder: true,
-              },
-              {
-                id: 'cost',
-                name: 'Cost',
-                selector: row => new Intl.NumberFormat('de-DE', {
-                  style: 'currency',
-                  currency: 'EUR',
-                  maximumFractionDigits: 2
-                }).format(row['totalPrice'] * row["amount"]),
-                sortable: true,
-                right: true,
-                reorder: true
-              },
-              {
-                id: 'options',
-                name: '',
-                omit: (state.userRole === 'viewer'),
-                selector: row => <div className="optionsIcons">
-                  <i onClick={() => {
-                    setState({
-                      ...state,
-                      dataForm: { id: row.id, code: row.code, summary: row.name },
-                      popup: { ...state.popup, modify: true }
-                    })
-                  }} className="bi bi-pencil-square"></i>
+            [{
+              id: 'code',
+              name: 'Code',
+              selector: row => row["code"],
+              compact: true,
+              sortable: true
+            },
+            {
+              id: 'type',
+              name: 'Type',
+              selector: row => <i className="bi bi-share"></i>,
+              compact: true,
+              sortable: true
+            },
+            {
+              id: 'unit',
+              name: 'Unit',
+              selector: row => row["unit"],
+              compact: true,
+              sortable: false
+            },
+            {
+              id: 'name',
+              name: 'Name',
+              selector: row => <Link to={'/app/decomp/items/' + row.id}>{row["name"]}</Link>,
+              sortable: true,
+              grow: 4,
+              reorder: true,
+            },
+            {
+              id: 'amount',
+              name: 'Quantity',
+              selector: row => row["amount"],
+              right: true,
+              reorder: true,
+            },
+            {
+              id: 'price',
+              name: 'Price',
+              selector: row => new Intl.NumberFormat('de-DE', {
+                style: 'currency',
+                currency: 'EUR',
+                maximumFractionDigits: 2
+              }).format(row['totalPrice']),
+              right: true,
+              reorder: true,
+            },
+            {
+              id: 'cost',
+              name: 'Cost',
+              selector: row => new Intl.NumberFormat('de-DE', {
+                style: 'currency',
+                currency: 'EUR',
+                maximumFractionDigits: 2
+              }).format(row['totalPrice'] * row["amount"]),
+              sortable: true,
+              right: true,
+              reorder: true
+            },
+            {
+              id: 'options',
+              name: '',
+              omit: (state.userRole === 'viewer'),
+              selector: row => <div className="optionsIcons">
+                <i onClick={() => {
+                  setState({
+                    ...state,
+                    dataForm: { id: row.id, code: row.code, summary: row.name },
+                    popup: { ...state.popup, modify: true }
+                  })
+                }} className="bi bi-pencil-square"></i>
 
-                  <i onClick={() => { deleteGroup(row.id) }}
-                    className="bi bi-x-square"></i>
-                </div>,
-                sortable: false,
-                right: true,
-                reorder: true
-              }
-            ]
+                <i onClick={() => { deleteGroup(row.id) }}
+                  className="bi bi-x-square"></i>
+              </div>,
+              sortable: false,
+              right: true,
+              reorder: true
+            }]
           }
         />
       </div>
