@@ -237,7 +237,7 @@ const FoldersList = () => {
         />
       }
 
-      <div className="mt-4">
+      <div className="mt-4 conceptInfo">
         <ConceptInfo
           elementType={'folders'}
           targetElementId={state.targetIdShowInfo ? state.targetIdShowInfo : 0}
